@@ -11,3 +11,5 @@ RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.
 
 WORKDIR /app
 COPY . /app
+
+RUN chmod -R 777 /app

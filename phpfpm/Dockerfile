@@ -15,4 +15,6 @@ RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.
 WORKDIR /var/www/html
 COPY . /var/www/html
 
+RUN chmod -R 777 /var/www/html
+
 EXPOSE 9000
