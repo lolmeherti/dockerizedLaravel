@@ -60,6 +60,8 @@ Follow these steps to get your Laravel application running:
 This setup includes the following services:
 
 - **PHP-FPM:** Handles PHP processing.
+- **PHP-CLI:** Runs PHP scripts.
+- **NODE:** Used to install dependencies of Laravel.
 - **Nginx:** Serves your Laravel application.
 - **MySQL:** Provides a database for your application.
 - **PHPMYADMIN:** (Optional) Can be used to view your MySQL tables in a GUI.
@@ -75,6 +77,11 @@ The `docker-compose.yml` file orchestrates the setup and configuration of the se
 ### Laravel Environment
 
 The `.env` file contains environment variables for your Laravel application. It's crucial to set these variables to ensure your application connects correctly to the services defined in `docker-compose.yml`.
+
+### Laravel Dependency Management
+
+- Use the **NODE** container to run `npm install` in the `/src/laravel` folder.
+- Use the **PHP-CLI** container to run `composer install` in the `/src/laravel` folder.
 
 ## License
 
