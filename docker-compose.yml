@@ -28,11 +28,13 @@ services:
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
-    command: tail -f /dev/null
+    command: sh -c "cd laravel && npm install && npm run dev --host"
+    ports:
+      - "5173:5173"
 
   mysql:
     image: mysql:5.7
-    container_name: mysql_vendingmachine
+    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: admin_db
@@ -46,7 +48,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin_vendingmachine
+    container_name: phpmyadmin
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
