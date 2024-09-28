@@ -39,9 +39,84 @@ Follow these steps to get your Laravel application running:
     sudo git clone https://github.com/lolmeherti/dockerizedLaravel ProjectName && cd ProjectName && sudo chown -R www-data:www-data /var/www/html/ProjectName && chmod -R 777 /var/www/html/ProjectName
     ```
    <br/>
+
+   ***If you're creating an application from scratch, ignore the following and skip over to the third step***
+   <br/>  
+   If your application doesn't already have a repository on [Github](https://github.com/), create one and execute the following:<br/>  
+   Navigate to your application directory in the command line. Replace `PATH` with the path of your pre-existing application.
+   ```bash
+   cd PATH
+   ```
+
+   Initiate a git repository
+   ```bash
+   git init
+   ```
+   
+   Connect your local environmet to the github repository. Replace `PATH` with the URL of your newly created github repository, e.g: `https://github.com/username/projectName`.
+   
+   ```bash
+   git remote add origin PATH
+   ```
+
+   Add all project files/directories to the staging area (ensure that the files that you dont want to be publicly exposed, are placed within a `.gitignore` file so they arent pushed)
+   ```bash
+   git add .
+   ```
+
+   Check that the files have been staged - with staged files appearing green in the response.
+   ```bash
+   git status
+   ```
+
+   Commit staged files
+   ```bash
+   git commit -m "[Initialises] repository"
+   ```
+
+   Push commit to github repository (***if you're using a different branch name to `master`, specify that branch instead of using `master`***)
+   ```bash
+   git push -u origin master
+   ```
+   <br/>
+   <ins>Replace built in laravel application with pre-built application</ins><br/>
+   <br/>  
+   Navigate to the directory of the dockerizedLaravel template (you'll have named it after your project at the beginning of step 2)
+
+   ---
+   **Windows**
+   <br/>  
+   Remove pre-built application
+   ```bash
+   rmdir /s /q laravel
+   ```
+
+   Clone pre-built application repository and name it `laravel`. Replace `PATH` with the URL of your github repository, e.g: `https://github.com/username/projectName`.
+   ```bash
+   git clone PATH laravel
+   ```
+   ---
+   **WSL/Linux Systems**
+   <br/>
+   <br/>
+   Remove pre-built application
+   ```bash
+   sudo rm -Rf laravel
+   ```
+   Clone pre-built application repository and name it `laravel`. Replace `PATH` with the URL of your github repository, e.g: `https://github.com/username/projectName`.
+   ```bash
+   sudo git clone PATH laravel
+   ```
+   Since you've now replaced the application which comes with the template, with your own pre-built one - you'll need to set the ownership/permissions again for the application to function properly.
+   ```bash
+   sudo chown -R www-data:www-data /var/www/html/ProjectName && chmod -R 777 /var/www/html/ProjectName
+   ```
+   <br/>
 3. **Set Up Environment File**
 
-    Copy the `.env.example` file from the official Laravel github repository to `.env`. Then fill in the database 
+    Create a `.env` file within the the `/src/laravel` directory of your project. Replace `ProjectName` with the actual name of your project.
+  
+    Copy the contents of the `.env.example` file from the official Laravel github repository, then paste into the `.env` that you've just created. Then fill in the database 
     credentials of the `.env` with those that you find in the `docker-compose.yml`:
     <br/>  
     Laravel github repository:
@@ -86,7 +161,10 @@ Follow these steps to get your Laravel application running:
    docker-compose up -d --force-recreate
    ```
    <br/>
-6. **Install Composer Packages**  
+6. **Install Composer Packages**
+
+   **Docker Desktop**
+   <br/>  
    Navigate to the `docker desktop` - then select the running ``php-cli`` container. Click on the `exec` tab. 
    Complete the following in the command line:<br/>  
    Open bash
@@ -108,8 +186,22 @@ Follow these steps to get your Laravel application running:
    ```bash
    composer install
    ```
+   ---
+   **IDE**
    <br/>
-7. **Generate API key**  
+   In the CMD, navigate to the application directory (`src/laravel`) - then execute the following:
+   <br/>
+   Make sure that comspoer is installed
+   ```bash
+   composer -v
+   ```
+   ***If it isn't installed, ensure that the image has been built correctly; has the correct pathing.***<br/>  
+   If there's no issues, install the packages
+   ```bash
+   composer install
+   ```
+   <br/>
+7. **Generate Application Key**  
    Navigate to the `php-fpm` container on the `docker desktop`. Then select the `exec` tab, and write the following in the command line:<br/>  
    Open bash
    ```bash
@@ -121,14 +213,12 @@ Follow these steps to get your Laravel application running:
    ```
    ***If the path doesn't exist, ensure that the pathing for the mount of the `php-fpm` container is correct***
    <br/>   
-   Generate API key
+   Generate application key
    ```bash
    php artisan key:generate
    ```
    <br/>
-8. **Run Migrations (Optional)**
-
-    If you have database migrations to run - following where you left off after generating an API key, execute:
+8. **Run Migrations**
 
     ```bash
     php artisan migrate:fresh
