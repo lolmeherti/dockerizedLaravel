@@ -97,7 +97,7 @@ Follow these steps to get your Laravel application running:
    cd laravel
    ```
    ***If the path doesn't exist, ensure that the pathing for the mount of the `php-cli` container is correct***
-  <br/>  
+   <br/>  
    Ensure composer is installed
    ```bash
    composer -v
