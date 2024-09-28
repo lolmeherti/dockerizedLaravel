@@ -8,6 +8,7 @@ Before proceeding, make sure you have installed:
 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/doc)
 
 ## Quick Start
 
