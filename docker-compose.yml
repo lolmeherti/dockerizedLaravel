@@ -1,4 +1,3 @@
-version: '3'
 services:
 
   nginx:
@@ -20,11 +19,11 @@ services:
   php-cli:
     image: php-cli-local:latest
     volumes:
-      - ./src:/app
+      - ./src:/var/www/html
     command: tail -f /dev/null
 
   node:
-    image: node:latest
+    image: node
     working_dir: /var/www/html
     volumes:
       - ./src:/var/www/html
@@ -33,8 +32,7 @@ services:
       - "5173:5173"
 
   mysql:
-    image: mysql:5.7
-    container_name: mysql
+    image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: admin_db
@@ -47,7 +45,6 @@ services:
       - "3306:3306"
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     environment:
       PMA_HOST: mysql

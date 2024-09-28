@@ -9,7 +9,6 @@ RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.
     && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-WORKDIR /app
-COPY . /app
+WORKDIR /var/www/html
 
-RUN chmod -R 777 /app
+RUN chmod -R 777 /var/www/html
