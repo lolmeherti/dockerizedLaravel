@@ -13,47 +13,130 @@ Before proceeding, make sure you have installed:
 
 Follow these steps to get your Laravel application running:
 
-1. **Clone the Repository**
+1. **Navigate to the location where you'd like to place the template**<br/>  
+   Windows
+   ```bash
+   cd PathToDir
+   ```
 
+   WSL/Linux Systems
+   ```bash
+   cd /var/www/html 
+   ```
+   <br/>
+
+2. **Clone the Repository**
+
+    Replace `ProjectName` with the name of your application <br/>  
+    Windows
     ```bash
-    git clone https://github.com/lolmeherti/dockerizedLaravel.git && cd dockerizedLaravel
+    git clone https://github.com/lolmeherti/dockerizedLaravel ProjectName && cd ProjectName
     ```
 
-2. **Set Up Environment File**
-
-    Copy the `.env.example` file to `.env` and fill in the database credentials you find in the docker-compose.yml:
-
+   WSL/Linux Systems (Also setting file ownership and permissions)
     ```bash
-    cp .env.example .env
+    sudo git clone https://github.com/lolmeherti/dockerizedLaravel ProjectName && cd ProjectName && sudo chown -R www-data:www-data /var/www/html/ProjectName && chmod -R 777 /var/www/html/ProjectName
     ```
+   <br/>
+3. **Set Up Environment File**
 
-3. **Build and Run with Docker Compose**
+    Copy the `.env.example` file from the official Laravel github repository to `.env`. Then fill in the database 
+    credentials of the `.env` with those that you find in the `docker-compose.yml`:
+    <br/>  
+    Laravel github repository:
+   
+   ```bash
+   https://github.com/laravel/laravel
+    ```
+   <br/>
+
+4. **Build `phpcli` and `phpfpm` Images**
+   
+   Assuming that you are still in the root repository for the template, navigate to the respective directories for `phpcli` 
+   and `phpfpm`. Clone each one, then return to the root directory for the project.<br/>  
+   Windows
+   ```bash
+   cd phpcli && docker build -t php-cli-local:latest . && cd ../phpfpm && docker build -t php-fpm-local:latest . && cd ..
+   ```
+   WSL/Linux Systems
+   ```bash
+   cd phpcli && sudo docker build -t php-cli-local:latest . && cd ../phpfpm && sudo docker build -t php-fpm-local:latest . && cd ..
+   ```
+   <br/>
+   
+   To ensure that the images have been built successfully, run the command below in the command line. You should see two new images built, called
+   `php-cli-local` and `php-fpm-local`.
+   ```bash
+   docker images
+   ```
+   <br/>
+
+5. **Build and Run with Docker Compose**
 
     Build the Docker images and start the services:
 
     ```bash
-    docker-compose up --build -d
+    docker-compose up -d
     ```
+   <br/>  
+   
+   ***If you have attempted to build the containers previously, execute the following to rebuild them***
+   ```bash
+   docker-compose up -d --force-recreate
+   ```
+   <br/>
+6. **Install Composer Packages**  
+   Navigate to the `docker desktop` - then select the running ``php-cli`` container. Click on the `exec` tab. 
+   Complete the following in the command line:<br/>  
+   Open bash
+   ```bash
+   bash
+   ```
+   Navigate to the application
+   ```bash
+   cd laravel
+   ```
+   ***If the path doesn't exist, ensure that the pathing for the mount of the `php-cli` container is correct***
+  <br/>  
+   Ensure composer is installed
+   ```bash
+   composer -v
+   ```
+   ***If it isn't installed, ensure that the image has been built correctly; has the correct pathing.***<br/>  
+   If there's no issues, install the packages
+   ```bash
+   composer install
+   ```
+   <br/>
+7. **Generate API key**  
+   Navigate to the `php-fpm` container on the `docker desktop`. Then select the `exec` tab, and write the following in the command line:<br/>  
+   Open bash
+   ```bash
+   bash
+   ```
+   Navigate to the application
+   ```bash
+   cd laravel
+   ```
+   ***If the path doesn't exist, ensure that the pathing for the mount of the `php-fpm` container is correct***
+   <br/>   
+   Generate API key
+   ```bash
+   php artisan key:generate
+   ```
+   <br/>
+8. **Run Migrations (Optional)**
 
-4. **Generate an Application Key**
-
-    Generate a new application key for Laravel:
+    If you have database migrations to run - following where you left off after generating an API key, execute:
 
     ```bash
-    docker-compose exec app php artisan key:generate
+    php artisan migrate:fresh
     ```
+   <br/>
 
-5. **Run Migrations (Optional)**
+9. **Accessing the Application**
 
-    If you have database migrations to run, execute:
-
-    ```bash
-    docker-compose exec app php artisan migrate
-    ```
-
-6. **Accessing the Application**
-
-    Visit `http://localhost` in your web browser to access your Laravel application.
+    Visit `http://localhost` in your web browser to access your Laravel application - or select on the highlighted port on `docker desktop`, under the `Port(s)` column; for the `nginx` container.
 
 ## Services Included
 
