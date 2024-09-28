@@ -188,7 +188,7 @@ Follow these steps to get your Laravel application running:
    ```
    ---
    **IDE**
-   <br/>
+   <br/>  
    In the CMD, navigate to the application directory (`src/laravel`) - then execute the following:
    <br/>
    Make sure that comspoer is installed
