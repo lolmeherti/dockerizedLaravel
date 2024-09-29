@@ -199,7 +199,7 @@ Follow these steps to get your Laravel application running:
    ```
    Copy the container ID that's related to the php-cli-local image. Replace `ContainerID` with your container ID
    ```bash
-   docker exec -it ContainerID sh
+   docker exec -it ContainerID bash
    ```
    Check the working directory and the contents within that working directory. You should be in `/var/www/html`, and within the contents should be: `laravel`
    ```bash
