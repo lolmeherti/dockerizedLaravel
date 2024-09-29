@@ -187,10 +187,24 @@ Follow these steps to get your Laravel application running:
    composer install
    ```
    ---
-   **IDE**
+   **CMD**
    <br/>  
-   In the CMD, navigate to the application directory (`src/laravel`) - then execute the following:
-   <br/>
+   If you want to install the composer packages via the CMD, do the following:
+   <br/>  
+   ***if your application container aren't running, execute `docker-compose up -d` or `docker-compose up -d --force-recreate`***
+   <br/>  
+   Display a list of the running containers
+   ```bash
+   docker ps
+   ```
+   Copy the container ID that's related to the php-cli-local image. Replace `ContainerID` with your container ID
+   ```bash
+   docker exec -it ContainerID sh
+   ```
+   Check the working directory and the contents within that working directory. You should be in `/var/www/html`, and within the contents should be: `laravel`
+   ```bash
+   pwd && ls
+   ```   
    Make sure that comspoer is installed
    ```bash
    composer -v
