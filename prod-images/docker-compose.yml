@@ -4,7 +4,7 @@ services:
     platform: linux/arm64
     volumes:
       - app-data:/var/www/html/volume
-    command: sh -c "cp -r /var/www/html/laravel/* /var/www/html/volume && tail -f /dev/null"
+    command: sh -c "rsync -a --delete /var/www/html/laravel/ /var/www/html/volume && tail -f /dev/null"
 
   php-fpm:
     image: deampuleadd/custom-base:test
