@@ -32,9 +32,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY ./src/laravel/ ./
 
-COPY ./src/laravel/prod-files/.env /var/www/html/laravel/.env
+RUN rm -f /public/hot
+RUN rm -rf /storage/framework/views/*
 
-RUN rm -f ./src/laravel/public/hot
+COPY ./src/laravel/prod-files/.env /var/www/html/laravel/.env
 
 COPY --from=node-build /app/public/build /var/www/html/laravel/public/build
 
@@ -44,5 +45,3 @@ COPY ../nginx/default.conf /var/www/html/nginx/conf.d/default.conf
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html
-
-RUN php artisan view:clear

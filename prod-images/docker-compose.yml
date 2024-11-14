@@ -1,0 +1,47 @@
+services:
+  app:
+    image: deampuleadd/custom-base:test
+    platform: linux/arm64
+    volumes:
+      - app-data:/var/www/html/volume
+    command: sh -c "cp -r /var/www/html/laravel/* /var/www/html/volume && tail -f /dev/null"
+
+  php-fpm:
+    image: deampuleadd/custom-base:test
+    platform: linux/arm64
+    depends_on:
+      - app
+    volumes:
+      - app-data:/var/www/html/laravel
+    restart: always
+    command: php-fpm
+
+  nginx:
+    image: deampuleadd/custom-nginx:test
+    platform: linux/arm64
+    depends_on:
+      - app
+      - php-fpm
+    volumes:
+      - app-data:/var/www/html/laravel
+    ports:
+      - "80:80"
+    restart: always
+
+  mysql:
+    image: mysql:latest
+    platform: linux/arm64
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: admin_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: adminpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+
+volumes:
+  app-data:
+  mysql_data:
