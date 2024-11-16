@@ -33,7 +33,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY ./src/laravel/ ./
 
-RUN rm -f /public/hot
+RUN rm -f /var/www/html/laravel/public/hot
 RUN rm -rf /storage/framework/views/*
 
 COPY ./src/laravel/prod-files/.env /var/www/html/laravel/.env
