@@ -15,6 +15,7 @@ RUN npm run build
 FROM php:8.2-fpm-alpine AS base
 
 RUN apk add --no-cache \
+    rsync \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
