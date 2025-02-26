@@ -25,6 +25,8 @@ services:
   node:
     image: node
     working_dir: /var/www/html
+    environment:
+      NODE_OPTIONS: "--no-deprecation"
     volumes:
       - ./src:/var/www/html
     command: sh -c "cd laravel && npm install && npm run dev --host"
@@ -32,7 +34,7 @@ services:
       - "5173:5173"
 
   mysql:
-    image: mysql
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: admin_db
