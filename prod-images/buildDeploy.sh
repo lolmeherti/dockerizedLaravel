@@ -3,7 +3,7 @@
 SRC_DIR="../src"
 LARAVEL_DIR="../src/laravel"
 BASE_DIR=".."
-DOCKER_REPO="YOUR_REPO"
+DOCKER_REPO="deampuleadd"
 TEMP_DIR="../temp"
 
 mkdir -p "$TEMP_DIR"
