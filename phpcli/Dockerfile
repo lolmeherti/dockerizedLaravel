@@ -1,7 +1,12 @@
 FROM php:8.3-cli
-RUN apt-get update && apt-get install -y git unzip
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git unzip curl \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
@@ -9,6 +14,10 @@ RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.
     && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-WORKDIR /var/www/html
+RUN adduser --disabled-password --gecos "" --uid 1000 appuser \
+    && mkdir -p /var/www/html \
+    && chown -R appuser:appuser /var/www/html
 
-RUN chmod -R 777 /var/www/html
+USER appuser
+
+WORKDIR /var/www/html
