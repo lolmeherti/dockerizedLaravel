@@ -46,17 +46,14 @@ services:
     ports:
       - "3306:3306"
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: admin
-      PMA_PASSWORD: adminpassword
+  n8n:
+    image: n8nio/n8n
+    restart: always
     ports:
-      - "8080:80"
-    depends_on:
-      - mysql
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
 
 volumes:
   mysql_data:
+  n8n_data:
