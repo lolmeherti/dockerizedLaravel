@@ -53,6 +53,9 @@ services:
       - "5678:5678"
     volumes:
       - n8n_data:/home/node/.n8n
+      - ./workflows:/workflows
+      - ./init.sh:/docker-entrypoint-init.d/init.sh
+    entrypoint: ["/bin/bash", "/docker-entrypoint-init.d/init.sh"]
 
 volumes:
   mysql_data:
