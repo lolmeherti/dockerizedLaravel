@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteMappingsManager">
+    <list>
+      <list>
+        <remote-mappings server-id="php@a6bfab5e-c5fd-417c-a1ea-26218bf8fc66">
+          <settings>
+            <list>
+              <mapping local-root="$PROJECT_DIR$/src/laravel" remote-root="/var/www/html/laravel" />
+            </list>
+          </settings>
+        </remote-mappings>
+        <remote-mappings server-id="php@78d96dcd-141f-40ff-bd2f-5e3b0f9d2be3" />
+      </list>
+    </list>
+  </component>
+</project>
