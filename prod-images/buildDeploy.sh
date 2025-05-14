@@ -26,17 +26,44 @@ if ! docker login; then
     exit 1
 fi
 
+declare -A image_prefix_map
+images=(base nginx phpcli phpfpm redis)
+
+for image in "${images[@]}"; do
+    echo ""
+    echo "Where do you want to push image \"$image\"?"
+    echo "1) custom-$image"
+    echo "2) premium-$image"
+    echo "3) skip"
+    read -p "Enter 1, 2, or 3: " choice
+
+    case "$choice" in
+        1) image_prefix_map["$image"]="custom" ;;
+        2) image_prefix_map["$image"]="premium" ;;
+        3) image_prefix_map["$image"]="skip" ;;
+        *) echo "Invalid option. Skipping $image." ; image_prefix_map["$image"]="skip" ;;
+    esac
+done
+
 build_and_push() {
     image=$1
-    docker build --no-cache -t "$DOCKER_REPO/custom-$image:$image_tag" \
+    prefix=$2
+    full_tag="$DOCKER_REPO/$prefix-$image:$image_tag"
+    docker build --no-cache -t "$full_tag" \
         --platform linux/arm64 \
         -f "$BASE_DIR/prod-images/$image/Dockerfile" "$BASE_DIR" \
-        && docker push "$DOCKER_REPO/custom-$image:$image_tag"
+        && docker push "$full_tag"
 }
 
-build_and_push base &
-build_and_push nginx &
+for image in "${images[@]}"; do
+    prefix="${image_prefix_map[$image]}"
+    if [ "$prefix" != "skip" ]; then
+        build_and_push "$image" "$prefix" &
+    else
+        echo "Skipping image \"$image\"."
+    fi
+done
 
 wait
 
-echo "All images pushed to $DOCKER_REPO with tag $image_tag."
+echo "All selected images pushed with tag $image_tag."
