@@ -33,6 +33,18 @@ services:
     ports:
       - "5173:5173"
 
+  reverb:
+    image: php-cli-local:latest
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php-fpm
+      - redis
+      - mysql
+    ports:
+      - "6001:6001"
+    command: php artisan reverb:start -vvv
+
   mysql:
     image: mysql:latest
     environment:
@@ -57,3 +69,4 @@ services:
 volumes:
   mysql_data:
   n8n_data:
+  redis_data:

@@ -1,18 +1,22 @@
 FROM php:8.3-cli
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip curl \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug \
+    && apt-get install -y --no-install-recommends \
+        git \
+        unzip \
+        curl \
+        libzip-dev \
+        default-mysql-client \
+    && docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        zip \
+        pcntl \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 RUN adduser --disabled-password --gecos "" --uid 1000 appuser \
     && mkdir -p /var/www/html \
@@ -20,4 +24,4 @@ RUN adduser --disabled-password --gecos "" --uid 1000 appuser \
 
 USER appuser
 
-WORKDIR /var/www/html
+WORKDIR /var/www/html/laravel
