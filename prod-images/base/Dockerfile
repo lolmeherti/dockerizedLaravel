@@ -1,3 +1,17 @@
+FROM node:18-alpine AS node-build
+
+WORKDIR /app
+
+COPY ./src/laravel/package*.json ./
+RUN npm ci
+
+COPY ./src/laravel/ ./
+COPY ./src/laravel/prod-files/.env .env
+COPY ./src/laravel/prod-files/vite.config.js vite.config.js
+
+RUN npm run build
+
+
 FROM php:8.2-fpm-alpine AS base
 
 RUN apk add --no-cache \

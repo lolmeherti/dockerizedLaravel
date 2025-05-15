@@ -19,3 +19,11 @@ RUN apt-get update \
     && echo "xdebug.log=/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN adduser --disabled-password --gecos "" --uid 1000 appuser \
+    && mkdir -p /var/www/html \
+    && chown -R appuser:appuser /var/www/html
+
+USER appuser
+
+WORKDIR /var/www/html/laravel
