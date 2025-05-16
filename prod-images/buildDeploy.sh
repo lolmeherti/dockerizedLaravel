@@ -46,14 +46,22 @@ for image in "${images[@]}"; do
 done
 
 build_and_push() {
-    image=$1
-    prefix=$2
-    full_tag="$DOCKER_REPO/$prefix-$image:$image_tag"
-    docker build --no-cache -t "$full_tag" \
-        --platform linux/arm64 \
-        -f "$BASE_DIR/prod-images/$image/Dockerfile" "$BASE_DIR" \
-        && docker push "$full_tag"
+  image=$1
+  prefix=$2
+  full_tag="$DOCKER_REPO/$prefix-$image:$image_tag"
+
+  df="$BASE_DIR/prod-images/$image/Dockerfile"
+  ctx="$(dirname "$df")"
+
+  echo "→ Building $image from context $ctx"
+  docker build --no-cache \
+    --platform linux/arm64 \
+    -t "$full_tag" \
+    -f "$df" \
+    "$ctx" \
+  && docker push "$full_tag"
 }
+
 
 for image in "${images[@]}"; do
     prefix="${image_prefix_map[$image]}"

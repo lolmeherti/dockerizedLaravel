@@ -1,4 +1,4 @@
-FROM node:18-alpine AS node-build
+FROM node:20-alpine AS node-build
 
 WORKDIR /app
 
@@ -15,7 +15,6 @@ RUN npm run build
 FROM php:8.2-fpm-alpine AS base
 
 RUN apk add --no-cache \
-    mariadb-client \
     rsync \
     freetype-dev \
     libjpeg-turbo-dev \
@@ -26,14 +25,19 @@ RUN apk add --no-cache \
     git \
     unzip \
     curl \
+    autoconf \
+    g++ \
+    make \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql zip exif pcntl gd \
+    && docker-php-ext-install \
+        pdo_mysql \
+        zip \
+        exif \
+        pcntl \
+        gd \
     && pecl install redis \
-    && docker-php-ext-enable redis
-
-RUN addgroup -g 1001 wwwgroup \
-    && adduser -D -u 1000 -G wwwgroup appuser \
-    && adduser www-data wwwgroup
+    && docker-php-ext-enable redis \
+    && apk del autoconf g++ make
 
 WORKDIR /var/www/html/laravel
 
@@ -44,8 +48,10 @@ COPY --chown=appuser:appuser ./src/laravel/prod-files/.env .env
 COPY --chown=appuser:appuser ./src/laravel/prod-files/vite.config.js vite.config.js
 COPY --from=node-build --chown=appuser:appuser /app/public/build ./public/build
 
-COPY ../nginx/default.conf /var/www/html/nginx/conf.d/default.conf
-
 RUN rm -f public/hot && rm -rf storage/framework/views/*
+
+RUN adduser -D -u 1000 appuser \
+    && mkdir -p /home/appuser/.ssh \
+    && chown -R appuser:appuser /home/appuser
 
 USER appuser

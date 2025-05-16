@@ -2,24 +2,18 @@
 FROM php:8.3-fpm-alpine
 
 RUN apk add --no-cache \
-    freetype-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libzip-dev \
-    zlib-dev \
-    mariadb-connector-c-dev \
+    autoconf g++ make \
+    freetype-dev libjpeg-turbo-dev libpng-dev libzip-dev zlib-dev mariadb-connector-c-dev \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/20-redis.ini \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install \
-        pdo_mysql \
-        zip \
-        exif \
-        pcntl \
-        gd
+    && docker-php-ext-install pdo_mysql zip exif pcntl gd \
+    && apk del autoconf g++ make
 
-RUN addgroup -g 1001 wwwgroup \
-    && adduser -D -u 1000 -G wwwgroup appuser \
-    && mkdir -p /var/www/html \
-    && chown -R appuser:wwwgroup /var/www/html
+RUN adduser -D -u 1000 appuser \
+    && mkdir -p /home/appuser/.ssh \
+    && chown -R appuser:appuser /home/appuser
 
 USER appuser
 
