@@ -1,9 +1,0 @@
-src/laravel/public/hot
-**/node_modules
-**/vendor
-.git
-.DS_Store
-*.log
-storage/app/private
-storage/app/backup-temp
-storage/logs
