@@ -20,19 +20,59 @@ services:
     image: php-cli-local:latest
     volumes:
       - ./src:/var/www/html
-    command: tail -f /dev/null
+      - /home/temp:/backups
+    command: [ "sh", "-c", "sleep 30 && while true; do php artisan schedule:run; sleep 120; done" ]
+
+  php-cli-worker:
+    image: php-cli-local:latest
+    volumes:
+      - ./src:/var/www/html
+      - /home/temp:/backups
+    depends_on:
+      - php-fpm
+      - redis
+      - mysql
+    command: php artisan queue:work redis --sleep=1 --tries=3
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
   node:
     image: node
     working_dir: /var/www/html
+    environment:
+      NODE_OPTIONS: "--no-deprecation"
     volumes:
       - ./src:/var/www/html
     command: sh -c "cd laravel && npm install && npm run dev --host"
     ports:
       - "5173:5173"
 
+  reverb:
+    image: php-cli-local:latest
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - php-fpm
+      - redis
+      - mysql
+    ports:
+      - "6001:6001"
+    command: php artisan reverb:start -vvv
+
   mysql:
-    image: mysql
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: admin_db
@@ -44,17 +84,15 @@ services:
     ports:
       - "3306:3306"
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: admin
-      PMA_PASSWORD: adminpassword
+  n8n:
+    image: n8nio/n8n
+    restart: always
     ports:
-      - "8080:80"
-    depends_on:
-      - mysql
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
 
 volumes:
   mysql_data:
+  n8n_data:
+  redis_data:
